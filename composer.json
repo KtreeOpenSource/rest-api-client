@@ -1,5 +1,5 @@
 {
-  "name": "someline/rest-api-client",
+  "name": "ktree/rest-api-client",
   "description": "An elegant and smart Rest API Client with OAuth2 authentication support. Build for Laravel and Someline Starter.",
   "keywords": [
     "rest",
