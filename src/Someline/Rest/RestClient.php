@@ -108,8 +108,8 @@ class RestClient
             throw new RuntimeException("Rest Client Error: Service [$service_name] is not found in environment [{$this->environment}] config.");
         }
 
-        $this->printLine("--------");
-        $this->printLine("REST CLIENT SERVICE: " . $service_name . ", ENVIRONMENT: " . $this->environment);
+        //$this->printLine("--------");//commnented by kt170
+        //$this->printLine("REST CLIENT SERVICE: " . $service_name . ", ENVIRONMENT: " . $this->environment);
 
         // get cache
         $minutes = $this->getConfig('oauth_tokens_cache_minutes', 10);
@@ -172,7 +172,7 @@ class RestClient
         foreach ($baseConfig as $key => $config) {
             if (is_array($config) && isset($combined_service_config[$key])) {
                 $combined_service_config[$key] = array_merge($config, $combined_service_config[$key]);
-            } else if (!isset($combined_service_config[$key])) {
+            } elseif (!isset($combined_service_config[$key])) {
                 $combined_service_config[$key] = $config;
             }
         }
@@ -198,10 +198,11 @@ class RestClient
         if (!ends_with($base_uri, '/')) {
             $base_uri .= '/';
         }
-        $this->printLine("REST CLIENT BASE URI: " . $base_uri);
+        //$this->printLine("REST CLIENT BASE URI: " . $base_uri); //commented by kt170
         $this->client = new Client(array_merge($guzzle_client_config, [
             'base_uri' => $base_uri,
             'exceptions' => false,
+            'connect_timeout' => 3.14
         ]));
     }
 
@@ -227,7 +228,7 @@ class RestClient
      */
     public function setOAuthUserCredentials($oauth_user_credentials)
     {
-//        $oauth_user_credentials = [
+        //        $oauth_user_credentials = [
 //            'username' => 'libern@someline.com',
 //            'password' => 'Abc12345',
 //        ];
@@ -450,6 +451,7 @@ class RestClient
     {
         $options = $this->configureOptions($options);
         $uri = $api ? $this->getServiceConfig('api_url') . $uri : $uri;
+
         $this->printArray($options);
         $response = $this->client->get($uri, array_merge($options, [
             'query' => $query,
@@ -469,6 +471,7 @@ class RestClient
     {
         $options = $this->configureOptions($options);
         $uri = $api ? $this->getServiceConfig('api_url') . $uri : $uri;
+
         $response = $this->client->post($uri, array_merge($options, [
             'form_params' => $data,
         ]));
@@ -615,9 +618,20 @@ class RestClient
     {
         $this->response = $response;
         $statusCode = $this->response->getStatusCode();
+        $responseData = $this->getResponseData();
+        $responseMessage = isset($responseData['message']) ? $responseData['message'] : "";
+        $headers = $this->service_config['headers'];
+
+        if ($statusCode == 401 && $responseMessage == 'Unauthenticated.') {
+            //echo '<pre>';print_r($headers);exit;
+            if (!isset($headers['dataTables'])) {
+              session()->flush();
+              abort(401);
+            } 
+        }
+
         if ($statusCode >= 300 && $this->debug_mode) {
             echo "\nResponse STATUS CODE is $statusCode:\n";
-            $responseData = $this->getResponseData();
             if ($responseData) {
                 $this->printArray($responseData);
             } else {
@@ -701,7 +715,7 @@ class RestClient
      */
     public function printResponseData()
     {
-        print_r($this->getResponseData());
+        //print_r($this->getResponseData());//commented by kt170
         return $this;
     }
 
@@ -710,7 +724,7 @@ class RestClient
      */
     public function printResponseOriginContent()
     {
-        print_r((string)$this->response->getOriginalContent());
+        //print_r((string)$this->response->getOriginalContent());
         return $this;
     }
 
@@ -730,8 +744,7 @@ class RestClient
     protected function printArray($array)
     {
         if ($this->debug_mode) {
-            print_r($array);
+            //  print_r($array);
         }
     }
-
 }

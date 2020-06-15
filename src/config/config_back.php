@@ -35,11 +35,11 @@ return array(
             'User-Agent' => 'someline-testing/1.0',
         ],
 
-        'api_url' => 'api/v1/',
+        'api_url' => 'api/',
 
         'oauth2_credentials' => [
-            'client_id' => '7',
-            'client_secret' => 'xZRsQLkoZqAn9BqcxUWdiMwX7S5tLseYWES56Amx',
+            'client_id' => '3',
+            'client_secret' => 'KM1t3UPVBIl66qYl64V5lC2qzrI3eALKXWnMjcRX',
         ],
 
         'oauth2_access_token_url' => 'oauth/token',
@@ -68,7 +68,7 @@ return array(
 
             'local' => [
 
-                'base_uri' => env('REST_CLIENT_PRODUCTION_SPENDMEX_URI'),
+                'base_uri' => config('app.url'),
 
                 'headers' => [
                     'Accept' => 'application/x.someline.v1+json',
@@ -78,7 +78,7 @@ return array(
 
             'spendmex' => [
 
-                'base_uri' => env('REST_CLIENT_PRODUCTION_SPENDMEX_URI'),
+                'base_uri' => config('app.url'),
 
                 'headers' => [
                     'Accept' => 'application/x.someline.v1+json',
@@ -91,22 +91,17 @@ return array(
         // environment: production
         'production' => [
 
-              'spendmex' => [
-              'base_uri' => env('REST_CLIENT_PRODUCTION_SPENDMEX_URI'),
-              'headers' => [
-              'Accept' => 'application/x.someline.v1+json',
-              ],
+            'spendmex' => [
 
-              ],
-              'spendmex-auth' => [
-              'base_uri' => env('REST_CLIENT_PRODUCTION_SPENDMEX_AUTH_URI'),
-              'headers' => [
-              'Accept' => 'application/x.someline.v1+json',
-              ],
+                'base_uri' => config('app.url'),
 
-              ],
+                'headers' => [
+                    'Accept' => 'application/x.someline.v1+json',
+                ],
 
-      ],
+            ],
+
+        ],
 
     ],
 
